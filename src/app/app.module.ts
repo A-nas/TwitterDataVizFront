@@ -6,6 +6,9 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { ChartSwapperComponent } from './chart-swapper/chart-swapper.component';
+import { WordCloudComponent } from './word-cloud/word-cloud.component';
+
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 
 @NgModule({
@@ -13,10 +16,12 @@ import { ChartSwapperComponent } from './chart-swapper/chart-swapper.component';
     AppComponent,
     HeaderComponent,
     FooterComponent,
-    ChartSwapperComponent
+    ChartSwapperComponent,
+    WordCloudComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    BsDropdownModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
