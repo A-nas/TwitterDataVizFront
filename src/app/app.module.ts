@@ -9,7 +9,9 @@ import { ChartSwapperComponent } from './chart-swapper/chart-swapper.component';
 import { WordCloudComponent } from './word-cloud/word-cloud.component';
 
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-
+import { D3Service } from 'd3-ng2-service';
+import { D3histoComponent } from './d3histo/d3histo.component';
+import { D3wordcloudComponent } from './d3wordcloud/d3wordcloud.component';
 
 @NgModule({
   declarations: [
@@ -17,13 +19,17 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
     HeaderComponent,
     FooterComponent,
     ChartSwapperComponent,
-    WordCloudComponent
+    WordCloudComponent,
+    D3histoComponent,
+    D3wordcloudComponent
   ],
   imports: [
     BrowserModule,
     BsDropdownModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    D3Service
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
