@@ -1,4 +1,4 @@
-import { Component, OnInit , ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CloudData, CloudOptions } from 'angular-tag-cloud-module';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
@@ -37,7 +37,7 @@ export class WordCloudComponent implements OnInit {
   newData(){
     console.log("clicked");
     const changedData$: Observable<CloudData[]> = Observable.of([
-      { text: 'Anas', weight: 3 },
+      {text: 'Anas', weight: 3 },
       {text: 'Anas', weight: 2, link: '#'},
       {text: 'Ananas', weight: 8, link: '#'},
       {text: 'Anas', weight: 10, link: '#'},
@@ -49,7 +49,6 @@ export class WordCloudComponent implements OnInit {
   }
 
   transform(scale:string){
-    this.cdr.detectChanges();
     if(scale == 'log'){
       console.log('log scale data');
       const myObservable = Observable.create((observer: Observer<CloudData[]>) =>
@@ -59,7 +58,6 @@ export class WordCloudComponent implements OnInit {
       myObservable.subscribe(
         res => this.data = res
       );
-      this.cdr.detectChanges();
     }else{
        console.log("call web service again");
     }
@@ -70,7 +68,7 @@ export class WordCloudComponent implements OnInit {
     window.open(clickinfo.link);
   }
   
-  constructor(private cdr:ChangeDetectorRef) {
+  constructor() {
   }
 
   ngOnInit() {
