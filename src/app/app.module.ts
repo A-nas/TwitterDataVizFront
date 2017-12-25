@@ -13,6 +13,8 @@ import { D3Service } from 'd3-ng2-service';
 import { D3histoComponent } from './d3histo/d3histo.component';
 
 import { TagCloudModule } from 'angular-tag-cloud-module';
+import { LinegraphComponent } from './linegraph/linegraph.component';
+import { LineChartComponent } from './line-chart/line-chart.component'
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { TagCloudModule } from 'angular-tag-cloud-module';
     FooterComponent,
     ChartSwapperComponent,
     WordCloudComponent,
-    D3histoComponent
+    D3histoComponent,
+    LinegraphComponent,
+    LineChartComponent
   ],
   imports: [
     BrowserModule,

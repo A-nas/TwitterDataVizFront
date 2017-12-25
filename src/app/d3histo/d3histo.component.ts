@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, NgZone, OnInit } from '@angular/core';
 
 import {
   D3Service,
@@ -49,8 +49,8 @@ export class D3histoComponent implements OnInit {
 
     if (this.parentNativeElement !== null) {
       svg = d3.select(this.parentNativeElement)
-          .append('svg')        // create an <svg> element
-          .attr('width', width) // set its dimensions
+          .append('svg')        // create new svg tag element
+          .attr('width', width) // set dimensions
           .attr('height', height);
 
       colors = ['red', 'yellow', 'green', 'blue'];
