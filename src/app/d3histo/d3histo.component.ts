@@ -39,7 +39,7 @@ export class D3histoComponent implements OnInit {
             let colors: any = [];
             let data: {name: string, yVal: number}[] = [];
             let padding: number = 25;
-            let width: number = 500;
+            let width: number = 300;
             let height: number = 150;
             let xScale: any;
             let yScale: any;

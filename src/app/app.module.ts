@@ -11,7 +11,8 @@ import { WordCloudComponent } from './word-cloud/word-cloud.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { D3Service } from 'd3-ng2-service';
 import { D3histoComponent } from './d3histo/d3histo.component';
-import { D3wordcloudComponent } from './d3wordcloud/d3wordcloud.component';
+
+import { TagCloudModule } from 'angular-tag-cloud-module';
 
 @NgModule({
   declarations: [
@@ -20,12 +21,12 @@ import { D3wordcloudComponent } from './d3wordcloud/d3wordcloud.component';
     FooterComponent,
     ChartSwapperComponent,
     WordCloudComponent,
-    D3histoComponent,
-    D3wordcloudComponent
+    D3histoComponent
   ],
   imports: [
     BrowserModule,
-    BsDropdownModule.forRoot()
+    BsDropdownModule.forRoot(), // for the histogram
+    TagCloudModule
   ],
   providers: [
     D3Service
