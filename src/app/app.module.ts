@@ -14,7 +14,8 @@ import { D3histoComponent } from './d3histo/d3histo.component';
 
 import { TagCloudModule } from 'angular-tag-cloud-module';
 import { LinegraphComponent } from './linegraph/linegraph.component';
-import { LineChartComponent } from './line-chart/line-chart.component'
+import { LineChartComponent } from './line-chart/line-chart.component';
+import { HistographComponent } from './histograph/histograph.component'
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { LineChartComponent } from './line-chart/line-chart.component'
     WordCloudComponent,
     D3histoComponent,
     LinegraphComponent,
-    LineChartComponent
+    LineChartComponent,
+    HistographComponent
   ],
   imports: [
     BrowserModule,
