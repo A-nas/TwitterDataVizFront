@@ -4,6 +4,8 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import { scaleLinear } from 'd3-ng2-service/src/bundle-d3';
 import { Observer } from 'rxjs/Observer'
+import {StatsService} from '../stats.service';
+import { Response } from '@angular/http/src/static_response';
 
 @Component({
   selector: 'app-word-cloud',
@@ -68,10 +70,14 @@ export class WordCloudComponent implements OnInit {
     window.open(clickinfo.link);
   }
   
-  constructor() {
+  constructor(private statsService: StatsService) {
   }
 
   ngOnInit() {
+    this.statsService.getTopTweets().subscribe(
+      (response) => console.log(response)
+      //(error) => console.log(error)
+    );
   }
 
 }

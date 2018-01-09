@@ -4,6 +4,6 @@ import {Http} from '@angular/http'
 export class StatsService{
     constructor(private http: Http){}
     getTopTweets(){
-        this.http.get('http://127.0.0.1:8000');
+       return this.http.get('http://127.0.0.1:8000/topwords/Hashtag');
     }
 }

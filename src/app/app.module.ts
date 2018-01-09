@@ -16,6 +16,9 @@ import { TagCloudModule } from 'angular-tag-cloud-module';
 import { LinegraphComponent } from './linegraph/linegraph.component';
 import { LineChartComponent } from './line-chart/line-chart.component';
 import { HistographComponent } from './histograph/histograph.component'
+// web service call
+import { StatsService } from './stats.service'
+import { HttpModule } from '@angular/http';
 
 @NgModule({
   declarations: [
@@ -32,10 +35,11 @@ import { HistographComponent } from './histograph/histograph.component'
   imports: [
     BrowserModule,
     BsDropdownModule.forRoot(), // for the histogram
-    TagCloudModule
+    TagCloudModule,
+    HttpModule, // solve no provider for http!
   ],
   providers: [
-    D3Service
+    D3Service, StatsService
   ],
   bootstrap: [AppComponent]
 })
