@@ -3,9 +3,9 @@
     Top <span class="caret"></span>
   </button>
   <ul *dropdownMenu class="dropdown-menu" role="menu">
-    <li role="menuitem" (click)="newData()"><a class="dropdown-item" href="#">Word</a></li>
-    <li role="menuitem" (click)="newData()"><a class="dropdown-item" href="#">@Mention</a></li>
-    <li role="menuitem" (click)="newData()"><a class="dropdown-item" href="#">#Hashtag</a></li>
+    <li role="menuitem" (click)="selectBy('Words')"><a class="dropdown-item" href="#">Word</a></li>
+    <li role="menuitem" (click)="selectBy('Mention')"><a class="dropdown-item" href="#">@Mention</a></li>
+    <li role="menuitem" (click)="selectBy('Hashtag')"><a class="dropdown-item" href="#">#Hashtag</a></li>
 
   </ul>
 </div>

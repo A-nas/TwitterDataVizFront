@@ -39,7 +39,8 @@ import { HttpModule } from '@angular/http';
     HttpModule, // solve no provider for http!
   ],
   providers: [
-    D3Service, StatsService
+    D3Service,
+    StatsService,
   ],
   bootstrap: [AppComponent]
 })

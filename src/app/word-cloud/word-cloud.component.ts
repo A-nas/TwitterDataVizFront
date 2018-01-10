@@ -13,6 +13,7 @@ import { Response } from '@angular/http/src/static_response';
   styleUrls: ['./word-cloud.component.css']
 })
 export class WordCloudComponent implements OnInit {
+  selectedBy = 'Words'
 
   options: CloudOptions = { 
     width : 1000,
@@ -20,20 +21,30 @@ export class WordCloudComponent implements OnInit {
     overflow: false,
   }
 
-  data: CloudData[] = [
-    {text: 'Weight-8-link-color', weight: 8, link: '#', color: '#ffaaee'},
-    {text: 'Weight-25-link', weight: 10, link: 'https://google.fr'},
-    {text: 'Weight-1-link', weight: 1, link: '#'},
-    {text: 'Weight-2-link', weight: 2, link: '#'},
-    {text: 'Weight-8-link', weight: 8, link: '#'},
-    {text: 'Weight-10-link', weight: 10, link: '#'},
-    {text: 'Weight-5-link', weight: 5, link: '#'},
-  ]
+  data: CloudData[] = [] // empty words array
 
-  setLog(returnedData :CloudData[]){
+  setLog(returnedData :CloudData[]){ // transform to log scale
     for(var key in returnedData)
       returnedData[key].weight = Math.log(returnedData[key].weight);
     return returnedData;
+  }
+
+  restructure(data){ // remove nested word inside _id property
+    return data.map(function(d) {
+       return { 'text' : d._id.word , 'weight' : d.total_amount };
+      })
+  }
+
+  restructureLog(data){ // remove nested word inside _id property
+    return data.map(function(d) {
+       return { 'text' : d._id.word , 'weight' : Math.log2(d.total_amount) };
+      })
+  }
+
+  selectBy(str: string){
+    this.selectedBy = str;
+    this.ngOnInit();
+
   }
 
   newData(){
@@ -53,15 +64,22 @@ export class WordCloudComponent implements OnInit {
   transform(scale:string){
     if(scale == 'log'){
       console.log('log scale data');
-      const myObservable = Observable.create((observer: Observer<CloudData[]>) =>
+      // old code for test (dont remove it)
+      /*const myObservable = Observable.create((observer: Observer<CloudData[]>) =>
       observer.next(this.setLog(this.data))
       );
-
       myObservable.subscribe(
         res => this.data = res
+      );*/
+    this.statsService.getTopTweets(this.selectedBy).subscribe(
+        (response) => this.data = this.restructureLog(response.json()),
+        (error) => console.log(error)
       );
     }else{
-       console.log("call web service again");
+      this.statsService.getTopTweets(this.selectedBy).subscribe(
+        (response) => this.data = this.restructure(response.json()),
+        (error) => console.log(error)
+      );
     }
   }
 
@@ -74,10 +92,12 @@ export class WordCloudComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.statsService.getTopTweets().subscribe(
-      (response) => console.log(response)
-      //(error) => console.log(error)
+    this.statsService.getTopTweets(this.selectedBy).subscribe(
+      (response) => this.data = this.restructure(response.json()),
+      //{console.log(this.restructure(response.json()))},
+      (error) => console.log(error)
     );
+   
   }
 
 }
