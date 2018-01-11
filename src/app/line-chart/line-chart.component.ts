@@ -8,6 +8,7 @@ import {
  } from '@angular/core';
 
 import * as D3 from 'd3';
+import { StatsService } from '../stats.service'
 
 @Component({
   selector: 'app-line-chart',
@@ -43,7 +44,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit {
 
   selectedCurve = 'curveLinear';
 
-  constructor() { }
+  constructor(private statsService: StatsService) { }
 
   ngAfterViewInit() {
     this.htmlElement = this.element.nativeElement;
