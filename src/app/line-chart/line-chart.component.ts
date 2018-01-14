@@ -1,6 +1,7 @@
 import {
   Component,
   OnChanges,
+  OnInit,
   AfterViewInit,
   ElementRef,
   ViewChild,
@@ -16,7 +17,21 @@ import { StatsService } from '../stats.service'
   styleUrls: ['./line-chart.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class LineChartComponent implements OnChanges, AfterViewInit {
+export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
+  
+  restructure(data){
+    return data.map(function(d) {
+       return { 'date' : d._id.date , 'close' : d.tweetCount };
+      })
+  }
+
+  ngOnInit() {
+   /* this.statsService.getNTweetByDay().subscribe(
+      (response) => {this.data = this.restructure(response.json());console.log(this.data)},
+      (error) => console.log(error)
+    );*/
+  }
+
 
   @ViewChild('container') element: ElementRef;
 
@@ -30,6 +45,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit {
   private xAxis;
   private yAxis;
   private htmlElement: HTMLElement;
+  private data = [];
 
   curveArray = [
     {'curve': D3.curveLinear, 'curveTitle': 'curveLinear'},
@@ -62,9 +78,16 @@ export class LineChartComponent implements OnChanges, AfterViewInit {
   }
 
   private setup(): void {
+    // web service call
+    this.statsService.getNTweetByDay().subscribe(
+      (response) => {this.data = this.restructure(response.json());console.log(this.data)},
+      (error) => console.log(error)
+    );
+    console.log(this.data);
+
     this.margin = {top: 20, right: 20, bottom: 30, left: 50};
-    this.width = 960 - this.margin.left - this.margin.right;
-    this.height = 500 - this.margin.top - this.margin.bottom;
+    this.width = 860 - this.margin.left - this.margin.right;
+    this.height = 400 - this.margin.top - this.margin.bottom;
     this.xScale = D3.scaleTime().range([0, this.width]);
     this.yScale = D3.scaleLinear().range([this.height, 0]);
     this.buildChart();
@@ -89,10 +112,12 @@ export class LineChartComponent implements OnChanges, AfterViewInit {
       .append('g')
       .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
 
-    D3.tsv('assets/testdata.tsv', this.type, function(error, data) {
-      if (error) {
+    //data.map(fucntion(<parameters>){})
+    D3.tsv('assets/testdata.tsv',this.type , function(error, data) { // this.date called for each iteration
+    //this.data.map( function(data){
+      /*if (error) {
         throw error;
-      }
+      }*/
 
       self.xScale.domain(D3.extent(data, function(d: any) { return d.date; }));
       self.yScale.domain(D3.extent(data, function(d: any) { return d.close; }));
@@ -110,7 +135,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit {
           .attr('y', 6)
           .attr('dy', '.71em')
           .style('text-anchor', 'end')
-          .text('Price ($)');
+          .text('Nombre de Tweets');
 
       self.svg.append('path')
           .datum(data)
@@ -120,11 +145,12 @@ export class LineChartComponent implements OnChanges, AfterViewInit {
   }
 
   private type(d: any) {
-    const formatDate = D3.timeParse('%d-%b-%y');
-
-    d.date = formatDate(d.date);
-    d.close = +d.close;
-
-    return d;
+    
+    //const formatDate = D3.isoFormat();//timeParse('%Y-%m-%d');
+    //console.log(D3.time.format.iso.parse("1473890400000"));
+    //d.date = formatDate('1473890400000');//d.date
+    //d.close = +d.close;
+    //console.log(d);
+    //return d;
   }
 }
