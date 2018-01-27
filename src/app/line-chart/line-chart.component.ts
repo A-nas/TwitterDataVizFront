@@ -146,11 +146,11 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
 
   private type(d: any) {
     
-    //const formatDate = D3.isoFormat();//timeParse('%Y-%m-%d');
+    const formatDate = D3.timeParse('%Y-%m-%d');
     //console.log(D3.time.format.iso.parse("1473890400000"));
-    //d.date = formatDate('1473890400000');//d.date
-    //d.close = +d.close;
-    //console.log(d);
-    //return d;
+    d.date = formatDate();//d.date
+    d.close = +d.close;
+    console.log(d);
+    return d;
   }
 }
