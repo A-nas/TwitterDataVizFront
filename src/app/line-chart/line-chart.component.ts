@@ -21,7 +21,23 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
   
   restructure(data){
     return data.map(function(d) {
-       return { 'date' : d._id.date , 'close' : d.tweetCount };
+        function type(d: any) {
+        d = parseInt(d);
+        d = new Date(d);
+    
+        var year = d.getFullYear();
+        var month = d.getMonth()+1;
+        var dt = d.getDate();
+        if (dt < 10) {
+          dt = '0' + dt;
+        }
+        if (month < 10) {
+          month = '0' + month;
+        }
+        d = year+'-' + month + '-'+dt;
+        return d;
+      }
+       return { 'date' : type(d._id[0].$date.$numberLong) , 'close' : d.tweetCount };
       })
   }
 
@@ -80,10 +96,12 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
   private setup(): void {
     // web service call
     this.statsService.getNTweetByDay().subscribe(
-      (response) => {this.data = this.restructure(response.json());console.log(this.data)},
+      //(response) => {this.data = response.json();console.log(this.data)},
+      (response) => {this.data =  this.restructure(response.json());console.log(this.data)
+      },
       (error) => console.log(error)
     );
-    console.log(this.data);
+    //console.log(this.data);
 
     this.margin = {top: 20, right: 20, bottom: 30, left: 50};
     this.width = 860 - this.margin.left - this.margin.right;
@@ -113,12 +131,12 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
       .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
 
     //data.map(fucntion(<parameters>){})
-    D3.tsv('assets/testdata.tsv',this.type , function(error, data) { // this.date called for each iteration
-    //this.data.map( function(data){
+    //D3.tsv('assets/testdata.tsv',this.type , function(error, data) { // this.date called for each iteration
+    this.data.map(function(data){
       /*if (error) {
         throw error;
       }*/
-
+      console.log("not yet here !!"); 
       self.xScale.domain(D3.extent(data, function(d: any) { return d.date; }));
       self.yScale.domain(D3.extent(data, function(d: any) { return d.close; }));
 
@@ -145,11 +163,23 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
   }
 
   private type(d: any) {
-    
-    const formatDate = D3.timeParse('%Y-%m-%d');
-    //console.log(D3.time.format.iso.parse("1473890400000"));
-    d.date = formatDate();//d.date
+    //console.log(year+'-' + month + '-'+dt);
+    d.date = parseInt(d.date);
+    d.date = new Date(d.date);
+
+    var year = d.date.getFullYear();
+    var month = d.date.getMonth()+1;
+    var dt = d.date.getDate();
+    if (dt < 10) {
+      dt = '0' + dt;
+    }
+    if (month < 10) {
+      month = '0' + month;
+    }
+    d.date = year+'-' + month + '-'+dt;
+
     d.close = +d.close;
+    console.log('inside Type')
     console.log(d);
     return d;
   }
