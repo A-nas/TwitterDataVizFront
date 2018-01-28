@@ -94,14 +94,6 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
   }
 
   private setup(): void {
-    // web service call
-    this.statsService.getNTweetByDay().subscribe(
-      //(response) => {this.data = response.json();console.log(this.data)},
-      (response) => {this.data =  this.restructure(response.json());console.log(this.data)
-      },
-      (error) => console.log(error)
-    );
-    //console.log(this.data);
 
     this.margin = {top: 20, right: 20, bottom: 30, left: 50};
     this.width = 860 - this.margin.left - this.margin.right;
@@ -132,13 +124,28 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
 
     //data.map(fucntion(<parameters>){})
     //D3.tsv('assets/testdata.tsv',this.type , function(error, data) { // this.date called for each iteration
-    this.data.map(function(data){
+    //this.data.map(function(data){
       /*if (error) {
         throw error;
       }*/
-      console.log("not yet here !!"); 
-      self.xScale.domain(D3.extent(data, function(d: any) { return d.date; }));
-      self.yScale.domain(D3.extent(data, function(d: any) { return d.close; }));
+    // web service call
+    this.statsService.getNTweetByDay().subscribe(
+      (response) => {
+        this.data =  this.restructure(response.json());
+        
+        //sort data
+        this.data.sort(function(a, b){
+          var keyA = new Date(a.date),
+              keyB = new Date(b.date);
+          // Compare the 2 dates
+          if(keyA < keyB) return -1;
+          if(keyA > keyB) return 1;
+          return 0;
+      });
+      console.log("im inside graph construction !!");
+      console.log(this.data);
+      self.xScale.domain(D3.extent(this.data, function(d: any) { return d.date; }));
+      self.yScale.domain(D3.extent(this.data, function(d: any) { return d.close; }));
 
       self.svg.append('g')
           .attr('class', 'x axis')
@@ -156,10 +163,13 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
           .text('Nombre de Tweets');
 
       self.svg.append('path')
-          .datum(data)
+          .datum(this.data)
           .attr('class', 'line')
           .attr('d', line);
-    });
+      },
+      (error) => console.log(error)
+    );
+    ;
   }
 
   private type(d: any) {
