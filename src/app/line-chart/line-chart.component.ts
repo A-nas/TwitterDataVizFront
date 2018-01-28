@@ -25,7 +25,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
         d = parseInt(d);
         d = new Date(d);
     
-        var year = d.getFullYear();
+       /*var year = d.getFullYear();
         var month = d.getMonth()+1;
         var dt = d.getDate();
         if (dt < 10) {
@@ -34,7 +34,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
         if (month < 10) {
           month = '0' + month;
         }
-        d = year+'-' + month + '-'+dt;
+        d = year+'-' + month + '-'+dt;*/
         return d;
       }
        return { 'date' : type(d._id[0].$date.$numberLong) , 'close' : d.tweetCount };
