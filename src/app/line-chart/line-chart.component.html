@@ -1,9 +1,17 @@
-<h2>curve: {{ this.selectedCurve }}</h2>
-<div class="curve-options">
-  <label *ngFor="let curve of curveArray">
-    <input type="radio" name="curveOptions"
-      [checked]="curve.curveTitle === selectedCurve"
-      [value]="curve.curveTitle" (change)="onCurveChange(curve.curveTitle)"> {{ curve.curveTitle }}
-  </label>
+
+
+<div class="btn-group" dropdown>
+  <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+    Zoom <span class="caret"></span>
+  </button>
+  <ul *dropdownMenu class="dropdown-menu" role="menu">
+    <li role="menuitem" (click)="selectBy('day')"><a class="dropdown-item" href="#">day</a></li>
+    <li role="menuitem" (click)="selectBy('month')"><a class="dropdown-item" href="#">month</a></li>
+    <li role="menuitem" (click)="selectBy('year')"><a class="dropdown-item" href="#">year</a></li>
+
+  </ul>
 </div>
+
+<h2>{{ this.selectedCurve }}</h2>
+
 <div #container class="container"><div>

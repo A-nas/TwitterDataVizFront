@@ -30,6 +30,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
       })
   }
 
+
   restructurebyMonth(data){
     return data.map(function(d) {
       function type(d: any) {
@@ -45,6 +46,17 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
   }
 
   restructurebyYear(data){
+    return data.map(function(d) {
+      function type(d: any) {
+        const formatDate = D3.timeParse('%Y-%m-%d');
+        d = formatDate(d);
+        console.log('date ==>');
+        console.log(d);
+        return d;
+      }
+      if(Number(d._id.month) < 10) d._id.month = '0'+d._id.month;
+     return { 'date' : type(d._id.year + '-' + '01' + '-' + '01') , 'close' : d.tweetCount };
+    })
   }
 
   ngOnInit() {
@@ -70,6 +82,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
   private data = [];
 
   selectedCurve = 'Tweet count by day';
+  selectedType = "month"
 
   constructor(private statsService: StatsService) { }
 
@@ -79,6 +92,11 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
     this.setup();
   }
 
+
+  selectBy(str){
+    this.selectedType = str;
+    this.setup();
+  }
   ngOnChanges(): void {
     this.setup();
   }
@@ -99,9 +117,8 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
   }
 
   private buildChart() {
-    
-    let test = "month"
-    if(test === "month"){
+
+    if(this.selectedType === "month"){
       this.statsService.getNTweetByMonth().subscribe(
         (response) => {
           this.data =  this.restructurebyMonth(response.json());
@@ -110,11 +127,12 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
           console.log("im inside graph construction !!");
           console.log(this.data);
           // draw graph
+          this.selectedCurve = "Tweets per month";
           this.drawGraph();
         },
         (error) => console.log(error)
       );
-    }else{
+    }else if(this.selectedType === "day"){
       this.statsService.getNTweetByDay().subscribe(
         (response) => {
           this.data =  this.restructure(response.json());
@@ -122,6 +140,21 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
           this.data.sort(this.sortDate);
           console.log("im inside graph construction !!");
           console.log(this.data);
+          // draw graph
+          this.selectedCurve = "Tweets per day";
+          this.drawGraph();
+        },
+        (error) => console.log(error)
+      );
+    }else{
+      this.statsService.getNTweetByYear().subscribe(
+        (response) => {
+          this.data =  this.restructurebyYear(response.json());
+          //sort data
+          this.data.sort(this.sortDate);
+          console.log("im inside graph construction (year) !!");
+          console.log(this.data);
+          this.selectedCurve = "Tweets per year";
           // draw graph
           this.drawGraph();
         },
@@ -141,7 +174,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
 }
 
   private drawGraph(){
-    //1
+    //
     this.xAxis = D3.axisBottom(this.xScale);
     this.yAxis = D3.axisLeft(this.yScale);
 
@@ -158,7 +191,8 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
       .attr('height', this.height + this.margin.top + this.margin.bottom)
       .append('g')
       .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
-    //#2
+    
+    //
     self.xScale.domain(D3.extent(this.data, function(d: any) { return d.date; }));
     self.yScale.domain(D3.extent(this.data, function(d: any) { return d.close; }));
 
@@ -205,7 +239,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
     return d;
   }
 
-  //parse date yyyy-mm-dd
+  //parse date
   private typeAssets(d: any) {
     const formatDate = D3.timeParse('%d-%b-%y');
 

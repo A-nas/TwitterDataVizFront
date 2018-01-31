@@ -1,5 +1,5 @@
 h2 {
-  color: #2ecc71;
+  color: #0084b4;
 }
 
 .axis path,
@@ -19,6 +19,6 @@ h2 {
 
 .line {
   fill: none;
-  stroke: #2ecc71;
+  stroke: #0084b4;
   stroke-width: 1.5px;
 }
