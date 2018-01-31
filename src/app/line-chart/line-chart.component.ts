@@ -21,41 +21,30 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
   
   restructure(data){
     return data.map(function(d) {
-      // type != this.fucntion (out of scope)
         function type(d: any) {
         d = parseInt(d);
         d = new Date(d);
-    
-        /* keep this code, may be useful later */
-       /*var year = d.getFullYear();
-        var month = d.getMonth()+1;
-        var dt = d.getDate();
-        if (dt < 10) {
-          dt = '0' + dt;
-        }
-        if (month < 10) {
-          month = '0' + month;
-        }
-        d = year+'-' + month + '-'+dt;*/
         return d;
       }
        return { 'date' : type(d._id[0].$date.$numberLong) , 'close' : d.tweetCount };
       })
   }
 
-  restructurebyYear(data){
+  restructurebyMonth(data){
     return data.map(function(d) {
       function type(d: any) {
-      d = parseInt(d);
-      d = new Date(d);
-      return d;
-    }
-     return { 'date' : type(d._id[0].$date.$numberLong) , 'close' : d.tweetCount };
+        const formatDate = D3.timeParse('%Y-%m-%d');
+        d = formatDate(d);
+        console.log('date ==>');
+        console.log(d);
+        return d;
+      }
+      if(Number(d._id.month) < 10) d._id.month = '0'+d._id.month;
+     return { 'date' : type(d._id.year + '-' + d._id.month + '-' + '01') , 'close' : d.tweetCount };
     })
   }
 
-  restructurebyMonth(data){
-
+  restructurebyYear(data){
   }
 
   ngOnInit() {
@@ -110,6 +99,49 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
   }
 
   private buildChart() {
+    
+    let test = "month"
+    if(test === "month"){
+      this.statsService.getNTweetByMonth().subscribe(
+        (response) => {
+          this.data =  this.restructurebyMonth(response.json());
+          //sort data
+          this.data.sort(this.sortDate);
+          console.log("im inside graph construction !!");
+          console.log(this.data);
+          // draw graph
+          this.drawGraph();
+        },
+        (error) => console.log(error)
+      );
+    }else{
+      this.statsService.getNTweetByDay().subscribe(
+        (response) => {
+          this.data =  this.restructure(response.json());
+          //sort data
+          this.data.sort(this.sortDate);
+          console.log("im inside graph construction !!");
+          console.log(this.data);
+          // draw graph
+          this.drawGraph();
+        },
+        (error) => console.log(error)
+      );
+    }
+
+  }
+
+  private sortDate(a, b){
+    var keyA = new Date(a.date),
+        keyB = new Date(b.date);
+    // Compare the 2 dates
+    if(keyA < keyB) return -1;
+    if(keyA > keyB) return 1;
+    return 0;
+}
+
+  private drawGraph(){
+    //1
     this.xAxis = D3.axisBottom(this.xScale);
     this.yAxis = D3.axisLeft(this.yScale);
 
@@ -126,56 +158,29 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
       .attr('height', this.height + this.margin.top + this.margin.bottom)
       .append('g')
       .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+    //#2
+    self.xScale.domain(D3.extent(this.data, function(d: any) { return d.date; }));
+    self.yScale.domain(D3.extent(this.data, function(d: any) { return d.close; }));
 
-    //data.map(fucntion(<parameters>){})
-    //D3.tsv('assets/testdata.tsv',this.type , function(error, data) { // this.date called for each iteration
-    //this.data.map(function(data){
-      /*if (error) {
-        throw error;
-      }*/
-    // web service call
-    this.statsService.getNTweetByDay().subscribe(
-      (response) => {
-        //* add controls here **********/
-        this.data =  this.restructure(response.json());
-        
-        //sort data
-        this.data.sort(function(a, b){
-          var keyA = new Date(a.date),
-              keyB = new Date(b.date);
-          // Compare the 2 dates
-          if(keyA < keyB) return -1;
-          if(keyA > keyB) return 1;
-          return 0;
-      });
-      console.log("im inside graph construction !!");
-      console.log(this.data);
-      self.xScale.domain(D3.extent(this.data, function(d: any) { return d.date; }));
-      self.yScale.domain(D3.extent(this.data, function(d: any) { return d.close; }));
+    self.svg.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + self.height + ')')
+        .call(self.xAxis);
 
-      self.svg.append('g')
-          .attr('class', 'x axis')
-          .attr('transform', 'translate(0,' + self.height + ')')
-          .call(self.xAxis);
+    self.svg.append('g')
+        .attr('class', 'y axis')
+        .call(self.yAxis)
+        .append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', 6)
+        .attr('dy', '.71em')
+        .style('text-anchor', 'end')
+        .text('Nombre de Tweets');
 
-      self.svg.append('g')
-          .attr('class', 'y axis')
-          .call(self.yAxis)
-          .append('text')
-          .attr('transform', 'rotate(-90)')
-          .attr('y', 6)
-          .attr('dy', '.71em')
-          .style('text-anchor', 'end')
-          .text('Nombre de Tweets');
-
-      self.svg.append('path')
-          .datum(this.data)
-          .attr('class', 'line')
-          .attr('d', line);
-      },
-      (error) => console.log(error)
-    );
-    ;
+    self.svg.append('path')
+        .datum(this.data)
+        .attr('class', 'line')
+        .attr('d', line);
   }
 
   private type(d: any) {
@@ -197,6 +202,16 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
     d.close = +d.close;
     console.log('im inside Type')
     console.log(d);
+    return d;
+  }
+
+  //parse date yyyy-mm-dd
+  private typeAssets(d: any) {
+    const formatDate = D3.timeParse('%d-%b-%y');
+
+    d.date = formatDate(d.date);
+    d.close = +d.close;
+
     return d;
   }
 }
