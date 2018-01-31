@@ -25,6 +25,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
         d = parseInt(d);
         d = new Date(d);
     
+        /* keep this code, may be useful later */
        /*var year = d.getFullYear();
         var month = d.getMonth()+1;
         var dt = d.getDate();
@@ -63,18 +64,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
   private htmlElement: HTMLElement;
   private data = [];
 
-  curveArray = [
-    {'curve': D3.curveLinear, 'curveTitle': 'curveLinear'},
-    {'curve': D3.curveStep, 'curveTitle': 'curveStep'},
-    {'curve': D3.curveStepBefore, 'curveTitle': 'curveStepBefore'},
-    {'curve': D3.curveStepAfter, 'curveTitle': 'curveStepAfter'},
-    {'curve': D3.curveBasis, 'curveTitle': 'curveBasis'},
-    {'curve': D3.curveCardinal, 'curveTitle': 'curveCardinal'},
-    {'curve': D3.curveMonotoneX, 'curveTitle': 'curveMonotoneX'},
-    {'curve': D3.curveCatmullRom, 'curveTitle': 'curveCatmullRom'}
-  ];
-
-  selectedCurve = 'curveLinear';
+  selectedCurve = 'Tweet count by day';
 
   constructor(private statsService: StatsService) { }
 
@@ -88,10 +78,10 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
     this.setup();
   }
 
-  onCurveChange(curve: string) {
+  /*onCurveChange(curve: string) {
     this.selectedCurve = curve;
     this.setup();
-  }
+  }*/
 
   private setup(): void {
 
@@ -112,7 +102,6 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
     let self = this;
 
     let line = D3.line()
-      .curve(this.curveArray.find((item) => item.curveTitle === this.selectedCurve).curve || D3.curveLinear)
       .x(function(d: any) { return self.xScale(d.date); })
       .y(function(d: any) { return self.yScale(d.close); });
 
@@ -189,7 +178,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
     d.date = year+'-' + month + '-'+dt;
 
     d.close = +d.close;
-    console.log('inside Type')
+    console.log('im inside Type')
     console.log(d);
     return d;
   }
