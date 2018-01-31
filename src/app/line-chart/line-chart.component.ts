@@ -21,6 +21,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
   
   restructure(data){
     return data.map(function(d) {
+      // type != this.fucntion (out of scope)
         function type(d: any) {
         d = parseInt(d);
         d = new Date(d);
@@ -40,6 +41,21 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
       }
        return { 'date' : type(d._id[0].$date.$numberLong) , 'close' : d.tweetCount };
       })
+  }
+
+  restructurebyYear(data){
+    return data.map(function(d) {
+      function type(d: any) {
+      d = parseInt(d);
+      d = new Date(d);
+      return d;
+    }
+     return { 'date' : type(d._id[0].$date.$numberLong) , 'close' : d.tweetCount };
+    })
+  }
+
+  restructurebyMonth(data){
+
   }
 
   ngOnInit() {
@@ -120,6 +136,7 @@ export class LineChartComponent implements OnChanges, AfterViewInit, OnInit {
     // web service call
     this.statsService.getNTweetByDay().subscribe(
       (response) => {
+        //* add controls here **********/
         this.data =  this.restructure(response.json());
         
         //sort data
